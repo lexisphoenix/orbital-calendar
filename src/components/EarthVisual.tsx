@@ -123,15 +123,17 @@ const CelestialNavigatorScene = ({ axialTilt }: EarthSceneProps) => {
           <CelestialNavigatorMesh axialTilt={axialTilt} />
         </Suspense>
 
-        <mesh position={[2.5, 0, 0]}>
-          <coneGeometry args={[0.08, 0.3, 8]} rotation={[0, 0, -Math.PI / 2]} />
-          <meshBasicMaterial color="#facc15" />
+        <group position={[2.5, 0, 0]}>
+          <mesh rotation={[0, 0, -Math.PI / 2]}>
+            <coneGeometry args={[0.08, 0.3, 8]} />
+            <meshBasicMaterial color="#facc15" />
+          </mesh>
           <Html position={[0.5, 0, 0]} center>
             <div className="bg-yellow-500/20 backdrop-blur-md border border-yellow-500/50 text-yellow-500 px-2 py-0.5 rounded text-[7px] font-bold font-mono whitespace-nowrap shadow-lg">
               FOCO SOLAR
             </div>
           </Html>
-        </mesh>
+        </group>
       </group>
 
       {/* Speed Label near equator */}
