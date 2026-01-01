@@ -87,39 +87,65 @@ export default function Home() {
     <main className="min-h-screen bg-black text-zinc-300 selection:bg-sky-500/30 font-serif">
       <div className="max-w-6xl mx-auto px-6 py-12 lg:py-24">
         
-        {/* UPDATED HERO SECTION */}
-        <header className="mb-24 space-y-12 relative text-center">
-          <div className="space-y-6">
-            <h1 className="text-sm md:text-base font-mono tracking-[0.5em] uppercase text-sky-500/60 flex items-center justify-center gap-4">
-              <span className="h-px w-10 bg-sky-900 hidden md:block" />
-              Calendario Orbital Terrestre
-              <span className="h-px w-10 bg-sky-900 hidden md:block" />
+        {/* UPDATED HERO SECTION: MODERN HIERARCHY */}
+        <header className="mb-24 space-y-16 relative text-center">
+          <div className="space-y-8">
+            <h1 className="text-[10px] md:text-xs font-mono tracking-[0.6em] uppercase text-sky-500/40 flex items-center justify-center gap-4">
+              <span className="h-px w-8 bg-sky-900/30 hidden md:block" />
+              Navegación Planetaria • Tierra V2
+              <span className="h-px w-8 bg-sky-900/30 hidden md:block" />
             </h1>
             
             <motion.div 
               key={status.dayOfYear}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-2"
+              className="space-y-4"
             >
-              <p className="text-zinc-500 font-mono text-xs uppercase tracking-[0.3em]">Hoy has recorrido:</p>
-              <div className="flex items-baseline justify-center gap-4">
-                <h2 className="text-7xl md:text-9xl font-bold tracking-tighter text-white font-mono leading-none">
+              <h2 className="text-4xl md:text-6xl font-light italic text-zinc-200 tracking-tight leading-none">
+                Hoy has recorrido
+              </h2>
+              
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-4xl md:text-6xl font-black text-sky-500 font-mono tracking-tighter shadow-sky-500/20 drop-shadow-2xl">
                   {(status.velocity * 3600 * 24).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
-                </h2>
-                <span className="text-3xl md:text-5xl font-light italic text-sky-500/50 uppercase tracking-widest font-mono">km</span>
+                </span>
+                <span className="text-xl md:text-2xl font-mono text-zinc-600 uppercase tracking-widest pt-2">km</span>
               </div>
             </motion.div>
 
-            <div className="pt-4 font-mono text-sm md:text-xl uppercase tracking-[0.4em] text-zinc-400 flex items-center justify-center gap-3">
-              <Calendar size={18} className="text-sky-800" />
-              {date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            {/* Modern Date Display */}
+            <div className="flex items-center justify-center gap-6 pt-4">
+              <div className="flex flex-col items-end">
+                <span className="text-2xl md:text-4xl font-black text-white leading-none font-mono">
+                  {date.getDate().toString().padStart(2, '0')}
+                </span>
+                <span className="text-[10px] font-mono text-sky-500 uppercase tracking-widest">Día</span>
+              </div>
+              
+              <div className="h-10 w-px bg-sky-900/50 rotate-12" />
+              
+              <div className="flex flex-col items-center">
+                <span className="text-xl md:text-2xl font-light text-zinc-400 uppercase tracking-[0.3em] font-serif italic">
+                  {date.toLocaleDateString('es-ES', { month: 'long' })}
+                </span>
+                <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-[0.4em]">Ciclo {date.getFullYear()}</span>
+              </div>
+
+              <div className="h-10 w-px bg-sky-900/50 rotate-12" />
+
+              <div className="flex flex-col items-start">
+                <span className="text-sm md:text-base font-mono text-zinc-500 uppercase tracking-widest">
+                  {date.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '')}
+                </span>
+                <span className="text-[10px] font-mono text-sky-800 uppercase tracking-widest">Inercia</span>
+              </div>
             </div>
           </div>
           
-          <div className="max-w-3xl mx-auto text-center relative px-8 py-10 border-y border-sky-900/20 bg-zinc-900/10 rounded-xl">
-            <p className="text-xl md:text-3xl leading-relaxed italic text-zinc-300 font-light">
-              "El tiempo no es una línea recta de tareas pendientes. Es una elipse de velocidad variable alrededor de una estrella. Olvida la agenda. Siente la inercia."
+          <div className="max-w-2xl mx-auto text-center relative px-10 py-8 border-l border-sky-500/10">
+            <p className="text-lg md:text-xl leading-relaxed italic text-zinc-500 font-light font-serif">
+              "El tiempo no es una línea recta de tareas pendientes. Es una elipse de velocidad variable alrededor de una estrella."
             </p>
           </div>
         </header>
