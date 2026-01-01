@@ -88,14 +88,19 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-6 py-12 lg:py-24">
         
         {/* UPDATED HERO SECTION: MODERN HIERARCHY */}
-        <header className="mb-24 space-y-16 relative text-center">
-          <div className="space-y-8">
-            <h1 className="text-[10px] md:text-xs font-mono tracking-[0.6em] uppercase text-sky-500/40 flex items-center justify-center gap-4">
-              <span className="h-px w-8 bg-sky-900/30 hidden md:block" />
+        <header className="mb-24 space-y-16 relative">
+          {/* Top Left Title & Logo */}
+          <div className="flex items-center gap-4 mb-12">
+            <div className="relative group">
+              <div className="absolute -inset-2 bg-sky-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Globe size={28} className="text-sky-500 relative animate-[spin_20s_linear_infinite]" />
+            </div>
+            <h1 className="text-[10px] md:text-xs font-mono tracking-[0.6em] uppercase text-sky-500/40">
               Navegación Planetaria • Tierra V2
-              <span className="h-px w-8 bg-sky-900/30 hidden md:block" />
             </h1>
-            
+          </div>
+
+          <div className="text-center space-y-8">
             <motion.div 
               key={status.dayOfYear}
               initial={{ opacity: 0, y: 15 }}
