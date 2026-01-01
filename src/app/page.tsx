@@ -87,53 +87,45 @@ export default function Home() {
     <main className="min-h-screen bg-black text-zinc-300 selection:bg-sky-500/30 font-serif">
       <div className="max-w-6xl mx-auto px-6 py-12 lg:py-24">
         
-        {/* REFINED HERO SECTION */}
-        <header className="mb-16 space-y-10 relative text-center">
-          <div className="space-y-4">
-            <h1 className="text-xs md:text-sm font-mono tracking-[0.5em] uppercase text-sky-500/60 flex items-center justify-center gap-4">
+        {/* UPDATED HERO SECTION */}
+        <header className="mb-24 space-y-12 relative text-center">
+          <div className="space-y-6">
+            <h1 className="text-sm md:text-base font-mono tracking-[0.5em] uppercase text-sky-500/60 flex items-center justify-center gap-4">
               <span className="h-px w-10 bg-sky-900 hidden md:block" />
               Calendario Orbital Terrestre
               <span className="h-px w-10 bg-sky-900 hidden md:block" />
             </h1>
-            <p className="text-5xl md:text-7xl font-light text-white tracking-[0.02em] italic opacity-95 leading-tight">
-              Edición Trayectoria
-            </p>
-            <div className="pt-2 font-mono text-sm md:text-lg uppercase tracking-[0.3em] text-zinc-400 flex items-center justify-center gap-3">
-              <Calendar size={16} className="text-sky-800" />
+            
+            <motion.div 
+              key={status.dayOfYear}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-2"
+            >
+              <p className="text-zinc-500 font-mono text-xs uppercase tracking-[0.3em]">Hoy has recorrido:</p>
+              <div className="flex items-baseline justify-center gap-4">
+                <h2 className="text-7xl md:text-9xl font-bold tracking-tighter text-white font-mono leading-none">
+                  {(status.velocity * 3600 * 24).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
+                </h2>
+                <span className="text-3xl md:text-5xl font-light italic text-sky-500/50 uppercase tracking-widest font-mono">km</span>
+              </div>
+            </motion.div>
+
+            <div className="pt-4 font-mono text-sm md:text-xl uppercase tracking-[0.4em] text-zinc-400 flex items-center justify-center gap-3">
+              <Calendar size={18} className="text-sky-800" />
               {date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </div>
           </div>
           
-          <div className="max-w-2xl mx-auto text-center relative px-8 py-8 border-y border-sky-900/10">
-            <p className="text-xl md:text-2xl leading-relaxed italic text-zinc-400 font-light">
+          <div className="max-w-3xl mx-auto text-center relative px-8 py-10 border-y border-sky-900/20 bg-zinc-900/10 rounded-xl">
+            <p className="text-xl md:text-3xl leading-relaxed italic text-zinc-300 font-light">
               "El tiempo no es una línea recta de tareas pendientes. Es una elipse de velocidad variable alrededor de una estrella. Olvida la agenda. Siente la inercia."
             </p>
           </div>
         </header>
 
-        {/* DISTANCE COUNTER: IMMEDIATELY BELOW HERO */}
-        <section className="mb-24 text-center space-y-6">
-          <motion.div 
-            key={status.dayOfYear}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center"
-          >
-            <span className="text-[10px] md:text-xs font-mono text-zinc-600 uppercase tracking-[0.5em] mb-3">Avance Orbital Diario</span>
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-baseline gap-4">
-                <h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-white font-mono leading-none">
-                  {(status.velocity * 3600 * 24).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
-                </h2>
-                <span className="text-2xl md:text-4xl font-light italic text-sky-500/50 uppercase tracking-widest font-mono">km</span>
-              </div>
-              <p className="text-lg md:text-2xl text-zinc-500 italic font-light mt-2">recorridos hoy en nuestra órbita</p>
-            </div>
-          </motion.div>
-        </section>
-
         {/* MAIN FOCUS: ORBITAL STATUS */}
-        <section className="mb-32 space-y-16">
+        <section className="mb-32 space-y-20">
           {/* Orbital Location Visual & Infographic */}
           <div className="relative">
             <div className="text-center mb-16 space-y-4">
@@ -145,10 +137,10 @@ export default function Home() {
                 Navegación Orbital: Trayectoria Real
               </div>
               
-              <div className="max-w-xl mx-auto p-6 bg-zinc-900/40 border border-sky-900/30 rounded-2xl shadow-2xl backdrop-blur-sm relative group overflow-hidden">
+              <div className="max-w-xl mx-auto p-6 bg-zinc-900/40 border border-sky-900/30 rounded-2xl shadow-2xl backdrop-blur-sm relative group overflow-hidden text-left">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-sky-500/50 to-transparent opacity-50" />
                 <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="flex-1 text-left space-y-2">
+                  <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-2 text-[10px] font-mono text-sky-500 uppercase tracking-[0.4em]">
                       <div className="w-1.5 h-1.5 bg-sky-500 rounded-full animate-pulse" />
                       Próximo Punto Crítico
@@ -180,6 +172,64 @@ export default function Home() {
               />
             </div>
           </div>
+
+          {/* Time Travel Slider - MOVED HERE */}
+          <section className="max-w-4xl mx-auto bg-zinc-900/30 border border-zinc-800/50 p-12 rounded-[3rem] space-y-12">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+              <div className="flex items-center gap-6">
+                <h2 className="text-sm font-mono uppercase tracking-[0.4em] text-zinc-500 flex items-center gap-3">
+                  <Compass size={20} className={isManual || isPlaying ? 'animate-spin' : ''} />
+                  Control de Navegación Temporal
+                </h2>
+                <button 
+                  onClick={togglePlay}
+                  className="flex items-center gap-3 px-8 py-3 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 rounded-full text-sm font-mono uppercase tracking-widest text-sky-400 transition-all shadow-2xl"
+                >
+                  {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                  {isPlaying ? 'Pausar' : 'Simular Ciclo Anual'}
+                </button>
+              </div>
+              {(isManual || isPlaying) && (
+                <button 
+                  onClick={resetToToday}
+                  className="text-xs font-mono uppercase tracking-widest text-sky-500 hover:text-sky-300 transition-colors flex items-center gap-2 bg-sky-500/5 px-4 py-2 rounded-full border border-sky-500/10"
+                >
+                  <RotateCw size={14} />
+                  Regresar al Presente
+                </button>
+              )}
+            </div>
+            
+            <div className="space-y-10">
+              <input 
+                type="range" 
+                min="1" 
+                max="365" 
+                value={currentDayOfYear} 
+                onChange={handleTimeTravel}
+                className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
+              />
+              
+              <div className="grid grid-cols-3 items-center text-[10px] font-mono uppercase tracking-widest text-zinc-600">
+                <div className="flex flex-col border-l border-zinc-800 pl-4">
+                  <span className="text-zinc-400 font-bold">PERIHELIO</span>
+                  <span className="text-[8px] opacity-50">Máxima Velocidad</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-sky-400 font-bold text-xl md:text-3xl block tracking-tighter mb-1">
+                    {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }).toUpperCase()}
+                  </span>
+                  <span className="text-zinc-500 text-[8px] tracking-[0.5em] block">
+                    {isPlaying ? 'SINCRONÍA ACELERADA' : isManual ? 'MODO SIMULACIÓN' : 'TIEMPO REAL'}
+                  </span>
+                </div>
+                <div className="flex flex-col text-right border-r border-zinc-800 pr-4">
+                  <span className="text-zinc-400 font-bold">AFELIO</span>
+                  <span className="text-[8px] opacity-50">Mínima Velocidad</span>
+                </div>
+              </div>
+            </div>
+          </section>
 
           {/* Momentum Trackers */}
           <div className="max-w-4xl mx-auto bg-zinc-900/10 p-10 rounded-[3rem] border border-zinc-800/30">
@@ -268,64 +318,6 @@ export default function Home() {
             </TelemetryPanel>
           </div>
         </div>
-
-        {/* Time Travel Slider - AT THE BOTTOM */}
-        <section className="mt-32 bg-zinc-900/30 border border-zinc-800/50 p-12 rounded-[3rem] space-y-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-6">
-              <h2 className="text-sm font-mono uppercase tracking-[0.4em] text-zinc-500 flex items-center gap-3">
-                <Compass size={20} className={isManual || isPlaying ? 'animate-spin' : ''} />
-                Control de Navegación Temporal
-              </h2>
-              <button 
-                onClick={togglePlay}
-                className="flex items-center gap-3 px-8 py-3 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 rounded-full text-sm font-mono uppercase tracking-widest text-sky-400 transition-all shadow-2xl"
-              >
-                {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
-                {isPlaying ? 'Pausar' : 'Simular Ciclo Anual'}
-              </button>
-            </div>
-            {(isManual || isPlaying) && (
-              <button 
-                onClick={resetToToday}
-                className="text-xs font-mono uppercase tracking-widest text-sky-500 hover:text-sky-300 transition-colors flex items-center gap-2 bg-sky-500/5 px-4 py-2 rounded-full border border-sky-500/10"
-              >
-                <RotateCw size={14} />
-                Regresar al Presente
-              </button>
-            )}
-          </div>
-          
-          <div className="space-y-10">
-            <input 
-              type="range" 
-              min="1" 
-              max="365" 
-              value={currentDayOfYear} 
-              onChange={handleTimeTravel}
-              className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
-            />
-            
-            <div className="grid grid-cols-3 items-center text-[10px] font-mono uppercase tracking-widest text-zinc-600">
-              <div className="flex flex-col border-l border-zinc-800 pl-4">
-                <span className="text-zinc-400 font-bold">PERIHELIO</span>
-                <span className="text-[8px] opacity-50">Máxima Velocidad</span>
-              </div>
-              <div className="text-center">
-                <span className="text-sky-400 font-bold text-xl md:text-3xl block tracking-tighter mb-1">
-                  {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }).toUpperCase()}
-                </span>
-                <span className="text-zinc-500 text-[8px] tracking-[0.5em] block">
-                  {isPlaying ? 'SINCRONÍA ACELERADA' : isManual ? 'MODO SIMULACIÓN' : 'TIEMPO REAL'}
-                </span>
-              </div>
-              <div className="flex flex-col text-right border-r border-zinc-800 pr-4">
-                <span className="text-zinc-400 font-bold">AFELIO</span>
-                <span className="text-[8px] opacity-50">Mínima Velocidad</span>
-              </div>
-            </div>
-          </div>
-        </section>
 
         <footer className="mt-20 text-center pb-20">
           <div className="text-[11px] font-mono text-zinc-700 uppercase tracking-[0.5em]">
