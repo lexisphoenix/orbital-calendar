@@ -173,60 +173,52 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Time Travel Slider - MOVED HERE */}
-          <section className="max-w-4xl mx-auto bg-zinc-900/30 border border-zinc-800/50 p-12 rounded-[3rem] space-y-12">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-              <div className="flex items-center gap-6">
-                <h2 className="text-sm font-mono uppercase tracking-[0.4em] text-zinc-500 flex items-center gap-3">
-                  <Compass size={20} className={isManual || isPlaying ? 'animate-spin' : ''} />
-                  Control de Navegación Temporal
-                </h2>
+          {/* Minimalist Time Travel Slider */}
+          <section className="max-w-3xl mx-auto py-8 space-y-8">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
                 <button 
                   onClick={togglePlay}
-                  className="flex items-center gap-3 px-8 py-3 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 rounded-full text-sm font-mono uppercase tracking-widest text-sky-400 transition-all shadow-2xl"
+                  className="p-3 bg-sky-500/10 hover:bg-sky-500/20 rounded-full text-sky-400 transition-all border border-sky-500/20"
+                  title={isPlaying ? 'Pausar' : 'Simular'}
                 >
-                  {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
-                  {isPlaying ? 'Pausar' : 'Simular Ciclo Anual'}
+                  {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
                 </button>
+                
+                {(isManual || isPlaying) && (
+                  <button 
+                    onClick={resetToToday}
+                    className="p-3 bg-zinc-900/50 hover:bg-zinc-800 rounded-full text-zinc-500 hover:text-sky-500 transition-all border border-zinc-800"
+                    title="Regresar al Presente"
+                  >
+                    <RotateCw size={14} />
+                  </button>
+                )}
               </div>
-              {(isManual || isPlaying) && (
-                <button 
-                  onClick={resetToToday}
-                  className="text-xs font-mono uppercase tracking-widest text-sky-500 hover:text-sky-300 transition-colors flex items-center gap-2 bg-sky-500/5 px-4 py-2 rounded-full border border-sky-500/10"
-                >
-                  <RotateCw size={14} />
-                  Regresar al Presente
-                </button>
-              )}
+
+              <div className="text-right">
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-600 block mb-1">
+                  {isPlaying ? 'Sincronía Acelerada' : isManual ? 'Modo Simulación' : 'Tiempo Real'}
+                </span>
+                <span className="text-lg font-mono font-bold text-sky-400 tracking-tighter uppercase">
+                  {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+                </span>
+              </div>
             </div>
             
-            <div className="space-y-10">
+            <div className="space-y-4">
               <input 
                 type="range" 
                 min="1" 
                 max="365" 
                 value={currentDayOfYear} 
                 onChange={handleTimeTravel}
-                className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
+                className="w-full h-1 bg-zinc-900 rounded-full appearance-none cursor-pointer accent-sky-500 hover:accent-sky-400 transition-all"
               />
               
-              <div className="grid grid-cols-3 items-center text-[10px] font-mono uppercase tracking-widest text-zinc-600">
-                <div className="flex flex-col border-l border-zinc-800 pl-4">
-                  <span className="text-zinc-400 font-bold">PERIHELIO</span>
-                  <span className="text-[8px] opacity-50">Máxima Velocidad</span>
-                </div>
-                <div className="text-center">
-                  <span className="text-sky-400 font-bold text-xl md:text-3xl block tracking-tighter mb-1">
-                    {date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }).toUpperCase()}
-                  </span>
-                  <span className="text-zinc-500 text-[8px] tracking-[0.5em] block">
-                    {isPlaying ? 'SINCRONÍA ACELERADA' : isManual ? 'MODO SIMULACIÓN' : 'TIEMPO REAL'}
-                  </span>
-                </div>
-                <div className="flex flex-col text-right border-r border-zinc-800 pr-4">
-                  <span className="text-zinc-400 font-bold">AFELIO</span>
-                  <span className="text-[8px] opacity-50">Mínima Velocidad</span>
-                </div>
+              <div className="flex justify-between text-[8px] font-mono uppercase tracking-widest text-zinc-700">
+                <span className="flex flex-col"><span className="text-zinc-500">Perihelio</span></span>
+                <span className="flex flex-col text-right"><span className="text-zinc-500">Afelio</span></span>
               </div>
             </div>
           </section>
