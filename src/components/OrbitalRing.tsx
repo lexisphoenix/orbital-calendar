@@ -109,8 +109,14 @@ export const OrbitalRing: React.FC<OrbitalRingProps> = ({ progress, eccentricity
   }, [progress, rx, visualEccentricity]);
 
   return (
-    <div className="relative flex items-center justify-center w-full h-[650px]">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
+    <div className="relative flex items-center justify-center w-full max-w-[650px] mx-auto aspect-square">
+      <svg
+        width="100%"
+        height="100%"
+        viewBox={`0 0 ${size} ${size}`}
+        className="w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
+      >
         <defs>
           <filter id="glow-planet">
             <feGaussianBlur stdDeviation="4" result="blur" />

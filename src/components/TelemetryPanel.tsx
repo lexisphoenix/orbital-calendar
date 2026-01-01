@@ -34,7 +34,7 @@ interface TelemetryPanelProps {
 export const TelemetryPanel: React.FC<TelemetryPanelProps> = ({ title, children, className }) => (
   <div className={cn("bg-zinc-900/50 border border-zinc-800 p-4 rounded-lg", className)}>
     <h3 className="text-xs font-bold text-sky-400 mb-4 tracking-[0.2em] uppercase font-mono border-b border-zinc-800 pb-2">{title}</h3>
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {children}
     </div>
   </div>

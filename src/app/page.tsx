@@ -85,10 +85,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-zinc-300 selection:bg-sky-500/30 font-serif">
-      <div className="max-w-6xl mx-auto px-6 py-12 lg:py-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12 lg:py-24">
         
         {/* REFINED HERO SECTION */}
-        <header className="mb-16 space-y-10 relative text-center">
+        <header className="mb-10 sm:mb-16 space-y-8 sm:space-y-10 relative text-center">
           <div className="space-y-4">
             <h1 className="text-xs md:text-sm font-mono tracking-[0.5em] uppercase text-sky-500/60 flex items-center justify-center gap-4">
               <span className="h-px w-10 bg-sky-900 hidden md:block" />
@@ -104,7 +104,7 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="max-w-2xl mx-auto text-center relative px-8 py-8 border-y border-sky-900/10">
+          <div className="max-w-2xl mx-auto text-center relative px-4 sm:px-8 py-6 sm:py-8 border-y border-sky-900/10">
             <p className="text-xl md:text-2xl leading-relaxed italic text-zinc-400 font-light">
               "El tiempo no es una línea recta de tareas pendientes. Es una elipse de velocidad variable alrededor de una estrella. Olvida la agenda. Siente la inercia."
             </p>
@@ -112,7 +112,7 @@ export default function Home() {
         </header>
 
         {/* DISTANCE COUNTER: IMMEDIATELY BELOW HERO */}
-        <section className="mb-24 text-center space-y-6">
+        <section className="mb-16 sm:mb-24 text-center space-y-6">
           <motion.div 
             key={status.dayOfYear}
             initial={{ opacity: 0 }}
@@ -133,10 +133,10 @@ export default function Home() {
         </section>
 
         {/* MAIN FOCUS: ORBITAL STATUS */}
-        <section className="mb-32 space-y-16">
+        <section className="mb-24 sm:mb-32 space-y-12 sm:space-y-16">
           {/* Orbital Location Visual & Infographic */}
           <div className="relative">
-            <div className="text-center mb-16 space-y-4">
+            <div className="text-center mb-10 sm:mb-16 space-y-4">
               <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-sky-500/5 border border-sky-500/10 text-sky-400 text-sm font-mono uppercase tracking-[0.4em]">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
@@ -182,7 +182,7 @@ export default function Home() {
           </div>
 
           {/* Momentum Trackers */}
-          <div className="max-w-4xl mx-auto bg-zinc-900/10 p-10 rounded-[3rem] border border-zinc-800/30">
+          <div className="max-w-4xl mx-auto bg-zinc-900/10 p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] border border-zinc-800/30">
             <MomentumTrackers 
               orbitalVelocity={status.velocity} 
               isAccelerating={status.isAccelerating} 
@@ -191,10 +191,10 @@ export default function Home() {
         </section>
 
         {/* Technical Data Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-start mb-24 sm:mb-32">
           <div className="space-y-8">
             <TelemetryPanel title="PANEL A: DINÁMICA ORBITAL">
-              <div className="col-span-2 mb-4">
+              <div className="col-span-1 sm:col-span-2 mb-4">
                 <GravityMeter 
                   velocity={status.velocity} 
                   acceleration={status.acceleration} 
@@ -219,26 +219,26 @@ export default function Home() {
                 label="Fase de Viaje" 
                 value={status.phase.split(' ')[0]} 
                 subValue={status.phase}
-                className="col-span-2"
+                className="col-span-1 sm:col-span-2"
               />
             </TelemetryPanel>
 
             <TelemetryPanel title="PANEL L: SISTEMA LUNAR">
-              <div className="col-span-2 mb-4">
+              <div className="col-span-1 sm:col-span-2 mb-4">
                 <MoonVisual phase={status.moonPhase} />
               </div>
               <TelemetryItem 
                 label="Fase Lunar" 
                 value={status.moonPhaseName} 
                 subValue={`${(status.moonPhase * 100).toFixed(0)}% del ciclo lunar.`}
-                className="col-span-2"
+                className="col-span-1 sm:col-span-2"
               />
             </TelemetryPanel>
           </div>
 
           <div className="space-y-8">
             <TelemetryPanel title="PANEL B: ESTADO ROTACIONAL">
-              <div className="col-span-2 mb-6">
+              <div className="col-span-1 sm:col-span-2 mb-6">
                 <EarthVisualV3 axialTilt={status.axialTilt} />
               </div>
               <TelemetryItem 
@@ -270,16 +270,16 @@ export default function Home() {
         </div>
 
         {/* Time Travel Slider - AT THE BOTTOM */}
-        <section className="mt-32 bg-zinc-900/30 border border-zinc-800/50 p-12 rounded-[3rem] space-y-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-6">
+        <section className="mt-24 sm:mt-32 bg-zinc-900/30 border border-zinc-800/50 p-6 sm:p-12 rounded-2xl sm:rounded-[3rem] space-y-8 sm:space-y-12">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6 w-full md:w-auto">
               <h2 className="text-sm font-mono uppercase tracking-[0.4em] text-zinc-500 flex items-center gap-3">
                 <Compass size={20} className={isManual || isPlaying ? 'animate-spin' : ''} />
                 Control de Navegación Temporal
               </h2>
               <button 
                 onClick={togglePlay}
-                className="flex items-center gap-3 px-8 py-3 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 rounded-full text-sm font-mono uppercase tracking-widest text-sky-400 transition-all shadow-2xl"
+                className="flex items-center justify-center gap-3 px-6 sm:px-8 py-3 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 rounded-full text-sm font-mono uppercase tracking-widest text-sky-400 transition-all shadow-2xl w-full sm:w-auto"
               >
                 {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
                 {isPlaying ? 'Pausar' : 'Simular Ciclo Anual'}
@@ -288,7 +288,7 @@ export default function Home() {
             {(isManual || isPlaying) && (
               <button 
                 onClick={resetToToday}
-                className="text-xs font-mono uppercase tracking-widest text-sky-500 hover:text-sky-300 transition-colors flex items-center gap-2 bg-sky-500/5 px-4 py-2 rounded-full border border-sky-500/10"
+                className="text-xs font-mono uppercase tracking-widest text-sky-500 hover:text-sky-300 transition-colors flex items-center justify-center gap-2 bg-sky-500/5 px-4 py-2 rounded-full border border-sky-500/10 w-full md:w-auto"
               >
                 <RotateCw size={14} />
                 Regresar al Presente
@@ -306,8 +306,8 @@ export default function Home() {
               className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
             />
             
-            <div className="grid grid-cols-3 items-center text-[10px] font-mono uppercase tracking-widest text-zinc-600">
-              <div className="flex flex-col border-l border-zinc-800 pl-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 items-center text-[10px] font-mono uppercase tracking-widest text-zinc-600">
+              <div className="flex flex-col border-l-0 sm:border-l border-zinc-800 pl-0 sm:pl-4">
                 <span className="text-zinc-400 font-bold">PERIHELIO</span>
                 <span className="text-[8px] opacity-50">Máxima Velocidad</span>
               </div>
@@ -319,7 +319,7 @@ export default function Home() {
                   {isPlaying ? 'SINCRONÍA ACELERADA' : isManual ? 'MODO SIMULACIÓN' : 'TIEMPO REAL'}
                 </span>
               </div>
-              <div className="flex flex-col text-right border-r border-zinc-800 pr-4">
+              <div className="flex flex-col text-left sm:text-right border-r-0 sm:border-r border-zinc-800 pr-0 sm:pr-4">
                 <span className="text-zinc-400 font-bold">AFELIO</span>
                 <span className="text-[8px] opacity-50">Mínima Velocidad</span>
               </div>

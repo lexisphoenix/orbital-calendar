@@ -151,7 +151,7 @@ const CelestialNavigatorScene = ({ axialTilt }: EarthSceneProps) => {
 };
 
 export const EarthVisualV3 = ({ axialTilt }: EarthSceneProps) => (
-  <div className="w-full h-[400px] bg-black rounded-xl overflow-hidden relative border border-zinc-900 shadow-2xl col-span-2">
+  <div className="w-full h-[280px] sm:h-[360px] lg:h-[400px] bg-black rounded-xl overflow-hidden relative border border-zinc-900 shadow-2xl col-span-2">
     <div className="absolute top-6 left-6 z-10 flex flex-col gap-2 pointer-events-none">
       <div className="flex items-center gap-2">
         <div className="w-1.5 h-1.5 bg-sky-500 rounded-full animate-pulse" />
