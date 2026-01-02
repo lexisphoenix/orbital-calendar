@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Orbital | Edición Impresa 2026</title>
+    <style>
+        /* --- ESTILOS PARA IMPRESIÓN --- */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&display=swap');
+
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --accent-blue: #0056b3;
+            --accent-amber: #b45309;
+            --line-dim: #e5e7eb;
+            --line-strong: #374151;
+        }
+
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            .no-print { display: none; }
+            .page { border: none; box-shadow: none; margin: 0; }
+        }
+
+        body {
+            background-color: #f3f4f6;
+            color: var(--text-main);
+            font-family: 'Cormorant Garamond', serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page {
+            background: white;
+            width: 210mm; /* A4 width */
+            height: 297mm; /* A4 height */
+            padding: 15mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .main-visual {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #calendar-svg {
+            width: 100%;
+            height: 100%;
+            max-height: 600px;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            border-top: 1px solid var(--line-dim);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .info-box h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin: 0 0 8px 0;
+            color: var(--accent-blue);
+        }
+
+        .info-box p {
+            font-size: 0.85rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .quote {
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            grid-column: span 3;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--text-main);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            border: none;
+            z-index: 100;
+        }
+
+        /* SVG Styles */
+        .orbit-path { fill: none; stroke: var(--line-dim); stroke-width: 1; stroke-dasharray: 4 4; }
+        .day-mark { fill: var(--line-dim); }
+        .day-mark.today { fill: var(--accent-blue); }
+        .month-text { font-family: 'Space Mono', monospace; font-size: 11px; fill: var(--line-strong); letter-spacing: 1px; font-weight: bold; }
+        .milestone-line { stroke: var(--line-dim); stroke-width: 0.5; }
+        .milestone-text { font-family: 'Space Mono', monospace; font-size: 10px; fill: var(--accent-amber); }
+        .sun-glyph { fill: var(--accent-amber); }
+        .earth-orbit-line { fill: none; stroke: var(--line-strong); stroke-width: 0.5; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn no-print" onclick="window.print()">Imprimir Calendario</button>
+
+    <div class="page">
+        <header>
+            <h1>Calendario Orbital 2026</h1>
+            <div class="subtitle">Trayectoria de la Nave Tierra alrededor del Sol</div>
+        </header>
+
+        <div class="main-visual">
+            <svg id="calendar-svg" viewBox="0 0 800 800">
+                <defs>
+                    <linearGradient id="velocity-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#f87171" /> <!-- Perihelio - Rápido -->
+                        <stop offset="50%" stop-color="#fbbf24" />
+                        <stop offset="100%" stop-color="#38bdf8" /> <!-- Afelio - Lento -->
+                    </linearGradient>
+                </defs>
+                <!-- El SVG se generará con JS -->
+            </svg>
+        </div>
+
+        <div class="footer-info">
+            <div class="info-box">
+                <h3>Mecánica de la Nave</h3>
+                <p>Nuestra órbita es una elipse de 940 millones de km. Viajamos a una velocidad promedio de 107,200 km/h (29.8 km/s).</p>
+            </div>
+            <div class="info-box">
+                <h3>Ciclo de Inercia</h3>
+                <p>En el Perihelio (Ene 3) alcanzamos la máxima velocidad. En el Afelio (Jul 4) la mínima, alejándonos 5M km más del Sol.</p>
+            </div>
+            <div class="info-box">
+                <h3>Orientación Axial</h3>
+                <p>La inclinación de 23.44° genera las estaciones mientras los hemisferios se turnan para recibir la luz directa del Sol.</p>
+            </div>
+            
+            <div class="info-box" style="grid-column: span 3; border-top: 1px solid var(--line-dim); padding-top: 15px; display: flex; justify-content: space-around; font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--line-strong);">
+                <span>● Día Estándar</span>
+                <span>● Inicio de Mes</span>
+                <span><span style="color: var(--accent-blue)">●</span> Posición Actual</span>
+                <span><span style="color: #f87171">━</span> Gradiente Velocidad (Rápido)</span>
+                <span><span style="color: #38bdf8">━</span> Gradiente Velocidad (Lento)</span>
+            </div>
+
+            <p class="quote">"El tiempo no es una línea recta de tareas pendientes. Es una elipse de velocidad variable alrededor de una estrella. Olvida la agenda. Siente la inercia."</p>
+        </div>
+    </div>
+
+    <script>
+        const svg = document.getElementById('calendar-svg');
+        const centerX = 400;
+        const centerY = 400;
+        const orbitRadiusX = 300;
+        const orbitRadiusY = 290;
+        const eccentricity = 0.0167;
+        const sunOffset = orbitRadiusX * eccentricity;
+
+        function createSVGElement(tag, attrs) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+            for (let k in attrs) el.setAttribute(k, attrs[k]);
+            return el;
+        }
+
+        // 1. Estaciones (Fondo de color)
+        const seasons = [
+            { name: "PRIMAVERA", day: 79, color: "#dcfce7" },
+            { name: "VERANO", day: 172, color: "#fef9c3" },
+            { name: "OTOÑO", day: 265, color: "#ffedd5" },
+            { name: "INVIERNO", day: 355, color: "#dbeafe" }
+        ];
+
+        seasons.forEach((s, i) => {
+            const nextDay = seasons[(i + 1) % 4].day;
+            let duration = nextDay - s.day;
+            if (duration < 0) duration += 365;
+            
+            const startAngle = (s.day / 365) * 2 * Math.PI - Math.PI/2;
+            const endAngle = ((s.day + duration) / 365) * 2 * Math.PI - Math.PI/2;
+            
+            const x1 = centerX + orbitRadiusX * Math.cos(startAngle);
+            const y1 = centerY + orbitRadiusY * Math.sin(startAngle);
+            const x2 = centerX + orbitRadiusX * Math.cos(endAngle);
+            const y2 = centerY + orbitRadiusY * Math.sin(endAngle);
+
+            const pathData = `M ${centerX} ${centerY} L ${x1} ${y1} A ${orbitRadiusX} ${orbitRadiusY} 0 0 1 ${x2} ${y2} Z`;
+            svg.appendChild(createSVGElement('path', {
+                d: pathData, fill: s.color, opacity: 0.6
+            }));
+
+            // Etiqueta de estación sutil
+            const midAngle = startAngle + (endAngle - startAngle)/2;
+            const tx = centerX + (orbitRadiusX - 100) * Math.cos(midAngle);
+            const ty = centerY + (orbitRadiusY - 95) * Math.sin(midAngle);
+            const sText = createSVGElement('text', {
+                x: tx, y: ty, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
+                'font-family': 'Space Mono', 'font-size': '12px', 'font-weight': '900',
+                'fill': '#1a1a1a', 'opacity': 0.1, 'letter-spacing': '4px',
+                'transform': `rotate(${(midAngle * 180 / Math.PI) + 90}, ${tx}, ${ty})`
+            });
+            sText.textContent = s.name;
+            svg.appendChild(sText);
+        });
+
+        // 2. Dibujar Órbita
+        svg.appendChild(createSVGElement('ellipse', {
+            cx: centerX, cy: centerY, rx: orbitRadiusX, ry: orbitRadiusY,
+            fill: 'none', stroke: 'url(#velocity-gradient)', 'stroke-width': 2, opacity: 0.4
+        }));
+
+        // 3. Sol
+        svg.appendChild(createSVGElement('circle', {
+            cx: centerX - sunOffset, cy: centerY, r: 8, class: 'sun-glyph'
+        }));
+        for(let i=0; i<8; i++) {
+            const angle = (i * 45) * Math.PI / 180;
+            svg.appendChild(createSVGElement('line', {
+                x1: centerX - sunOffset + Math.cos(angle) * 12,
+                y1: centerY + Math.sin(angle) * 12,
+                x2: centerX - sunOffset + Math.cos(angle) * 18,
+                y2: centerY + Math.sin(angle) * 18,
+                stroke: '#b45309', 'stroke-width': 1
+            }));
+        }
+
+        const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+        const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        const milestones = [
+            { day: 3, name: "PERIHELIO", label: "MÁX. VELOCIDAD", date: "3 Ene" },
+            { day: 79, name: "EQUINOCCIO PRIMAVERA", label: "EQUILIBRIO", date: "20 Mar" },
+            { day: 172, name: "SOLSTICIO VERANO", label: "APOGEO (N)", date: "21 Jun" },
+            { day: 185, name: "AFELIO", label: "MÍN. VELOCIDAD", date: "4 Jul" },
+            { day: 265, name: "EQUINOCCIO OTOÑO", label: "EQUILIBRIO", date: "22 Sep" },
+            { day: 355, name: "SOLSTICIO INVIERNO", label: "MÍNIMO (N)", date: "21 Dic" }
+        ];
+
+        let currentDay = 0;
+        const todayDayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+
+        daysInMonth.forEach((days, mIdx) => {
+            for (let d = 0; d < days; d++) {
+                const angle = (currentDay / 365) * 2 * Math.PI - Math.PI/2;
+                const x = centerX + orbitRadiusX * Math.cos(angle);
+                const y = centerY + orbitRadiusY * Math.sin(angle);
+                const isFirst = d === 0;
+                const isToday = currentDay === todayDayOfYear;
+
+                // --- ESPACIO PARA ESCRIBIR (Líneas radiales hacia afuera) ---
+                const lineStartX = centerX + (orbitRadiusX + 8) * Math.cos(angle);
+                const lineStartY = centerY + (orbitRadiusY + 8) * Math.sin(angle);
+                const lineEndX = centerX + (orbitRadiusX + 40) * Math.cos(angle);
+                const lineEndY = centerY + (orbitRadiusY + 40) * Math.sin(angle);
+                
+                svg.appendChild(createSVGElement('line', {
+                    x1: lineStartX, y1: lineStartY, x2: lineEndX, y2: lineEndY,
+                    stroke: '#e5e7eb', // Gris muy suave
+                    'stroke-width': 0.5
+                }));
+
+                if (isToday) {
+                    svg.appendChild(createSVGElement('circle', {
+                        cx: x, cy: y, r: 5, fill: 'none', stroke: '#0056b3', 'stroke-width': 0.5, 'stroke-dasharray': '1 1'
+                    }));
+                    const tx = x + 12 * Math.cos(angle);
+                    const ty = y + 12 * Math.sin(angle);
+                    const tText = createSVGElement('text', {
+                        x: tx, y: ty, 'font-family': 'Space Mono', 'font-size': '6px',
+                        'fill': '#0056b3', 'font-weight': 'bold', 'text-anchor': Math.cos(angle) > 0 ? 'start' : 'end'
+                    });
+                    tText.textContent = "USTED ESTÁ AQUÍ";
+                    svg.appendChild(tText);
+                }
+
+                svg.appendChild(createSVGElement('circle', {
+                    cx: x, cy: y, r: isFirst ? 2.5 : 1, fill: isToday ? '#0056b3' : '#d1d5db'
+                }));
+
+                if (isFirst) {
+                    // Línea de mes (un poco más larga para destacar el inicio)
+                    const x2 = centerX + (orbitRadiusX + 45) * Math.cos(angle);
+                    const y2 = centerY + (orbitRadiusY + 45) * Math.sin(angle);
+                    svg.appendChild(createSVGElement('line', {
+                        x1: x, y1: y, x2: x2, y2: y2, stroke: '#374151', 'stroke-width': 1
+                    }));
+                    // Texto mes (movido más afuera para no chocar con las líneas de escritura)
+                    const textAngle = angle + ((days/2)/365) * 2 * Math.PI;
+                    const tx = centerX + (orbitRadiusX + 60) * Math.cos(textAngle);
+                    const ty = centerY + (orbitRadiusY + 60) * Math.sin(textAngle);
+                    const mText = createSVGElement('text', {
+                        x: tx, y: ty, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
+                        class: 'month-text', transform: `rotate(${(textAngle * 180 / Math.PI) + 90}, ${tx}, ${ty})`
+                    });
+                    mText.textContent = months[mIdx];
+                    svg.appendChild(mText);
+                }
+
+                milestones.forEach(m => {
+                    if (currentDay === m.day) {
+                        const x2 = centerX + (orbitRadiusX - 45) * Math.cos(angle);
+                        const y2 = centerY + (orbitRadiusY - 42) * Math.sin(angle);
+                        svg.appendChild(createSVGElement('line', {
+                            x1: x, y1: y, x2: x2, y2: y2, stroke: '#b45309', 'stroke-width': 2
+                        }));
+                        const tx = centerX + (orbitRadiusX - 55) * Math.cos(angle);
+                        const ty = centerY + (orbitRadiusY - 50) * Math.sin(angle);
+                        const mText = createSVGElement('text', {
+                            x: tx, y: ty, 'text-anchor': Math.cos(angle) > 0 ? 'end' : 'start',
+                            'dominant-baseline': 'middle', style: 'font-weight: 900; font-size: 11px; fill: #b45309;'
+                        });
+                        mText.textContent = m.name;
+                        svg.appendChild(mText);
+                        const mLabel = createSVGElement('text', {
+                            x: tx, y: ty + 12, 'text-anchor': Math.cos(angle) > 0 ? 'end' : 'start',
+                            'dominant-baseline': 'middle', style: 'font-size: 8px; font-weight: bold; opacity: 0.9;'
+                        });
+                        mLabel.textContent = `${m.date} - ${m.label}`;
+                        svg.appendChild(mLabel);
+                    }
+                });
+                currentDay++;
+            }
+        });
+    </script>
+</body>
+</html>

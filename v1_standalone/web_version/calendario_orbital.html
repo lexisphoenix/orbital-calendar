@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Orbital | Tierra V2</title>
+    <style>
+        /* --- ESTILOS VISUALES --- */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap');
+
+        :root {
+            --bg-color: #0B0C10;
+            --text-main: #C5C6C7;
+            --accent-cyan: #45A29E;
+            --accent-amber: #FFC107;
+            --dim-line: #1F2833;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Cormorant Garamond', serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .human-date {
+            font-size: 1rem;
+            opacity: 0.6;
+            font-style: italic;
+            margin-bottom: 30px;
+            margin-top: 5px;
+        }
+
+        /* SISTEMA VISUAL ORBITAL */
+        .orbit-system {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 30px auto;
+        }
+
+        .orbit-path {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 1px dashed var(--dim-line);
+            border-radius: 50%;
+            transform: scale(1, 0.98); /* Ligera elipse */
+        }
+
+        .sun {
+            position: absolute;
+            top: 50%; left: 50%; /* Sol centrado */
+            transform: translate(-50%, -50%);
+            width: 14px; height: 14px;
+            background-color: var(--accent-amber);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .earth-marker {
+            position: absolute;
+            width: 12px; height: 12px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            /* Eliminamos top/left fijos para que el JS mande, 
+               pero añadimos el transform para centrar el punto */
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--accent-cyan);
+            transition: all 1s ease-out;
+            z-index: 10;
+        }
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            border-top: 1px solid var(--dim-line);
+            padding-top: 20px;
+        }
+
+        .data-point span.label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            opacity: 0.5;
+            display: block;
+        }
+
+        .data-point span.value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .data-point span.unit {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .status-message {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-style: italic;
+            min-height: 3em; /* Espacio reservado */
+        }
+
+        .phase-indicator {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-amber);
+            display: block;
+            margin-bottom: 20px;
+        }
+        
+        /* Mensaje de error (oculto por defecto) */
+        #error-box {
+            display: none;
+            color: #ff4444;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            margin-top: 20px;
+            border: 1px solid #ff4444;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <header>
+            <h1>Status Orbital</h1>
+            <div class="human-date" id="humanDate">Iniciando sistemas...</div>
+        </header>
+
+        <div class="orbit-system">
+            <div class="orbit-path"></div>
+            <div class="sun"></div>
+            <div class="earth-marker" id="earth"></div>
+        </div>
+
+        <div class="status-message" id="dynamicMessage">Calculando trayectoria...</div>
+        <span class="phase-indicator" id="orbitPhase">--</span>
+
+        <div class="telemetry-grid">
+            <div class="data-point">
+                <span class="label">Velocidad</span>
+                <span class="value" id="speedVal">--</span>
+                <span class="unit">km/s</span>
+            </div>
+            <div class="data-point">
+                <span class="label">Distancia Sol</span>
+                <span class="value" id="distVal">--</span>
+                <span class="unit">M km</span>
+            </div>
+            <div class="data-point">
+                <span class="label">Progreso</span>
+                <span class="value" id="degVal">--</span>
+                <span class="unit">Grados</span>
+            </div>
+            <div class="data-point">
+                <span class="label">Rotación Año</span>
+                <span class="value" id="rotVal">--</span>
+                <span class="unit">Giro</span>
+            </div>
+        </div>
+        
+        <div id="error-box"></div>
+    </div>
+
+    <script>
+        // Esperamos a que la ventana cargue completamente
+        window.addEventListener('load', function() {
+            try {
+                iniciarCalculos();
+            } catch (error) {
+                // Si algo falla, lo mostramos en pantalla
+                const errorBox = document.getElementById('error-box');
+                errorBox.style.display = 'block';
+                errorBox.innerText = "ERROR DE SISTEMA: " + error.message;
+            }
+        });
+
+        function iniciarCalculos() {
+            // --- 1. OBTENER FECHA ---
+            const ahora = new Date();
+            const inicioAnio = new Date(ahora.getFullYear(), 0, 0);
+            const diff = ahora - inicioAnio;
+            const diaDelAnio = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            // Actualizar fecha humana
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const fechaTexto = ahora.toLocaleDateString('es-ES', opciones);
+            document.getElementById('humanDate').innerText = fechaTexto.charAt(0).toUpperCase() + fechaTexto.slice(1);
+
+            // --- 2. CONSTANTES FÍSICAS SIMPLIFICADAS ---
+            const PERIHELIO_DIA = 3; // Aprox 3 Enero
+            const radioOrbitaPx = 140; // Mitad del ancho del div orbit-system (280/2)
+
+            // --- 3. CÁLCULO DE POSICIÓN ---
+            // Grados visuales (0° = Arriba/Enero)
+            const grados = (diaDelAnio / 365.25) * 360;
+            
+            // Convertimos a radianes para mover la bolita (Restamos 90° para empezar arriba)
+            const radianes = (grados - 90) * (Math.PI / 180);
+            
+            // Coordenadas X, Y (Centro es 140,140)
+            // Multiplicamos Y por 0.98 para coincidir con el transform: scale(1, 0.98) de la órbita CSS
+            const x = radioOrbitaPx * Math.cos(radianes) + 140;
+            const y = (radioOrbitaPx * 0.98) * Math.sin(radianes) + 140;
+
+            // Aplicar movimiento (el transform: translate(-50%,-50%) en CSS lo centrará)
+            const tierra = document.getElementById('earth');
+            tierra.style.left = x + "px"; 
+            tierra.style.top = y + "px";
+
+            // --- 4. CÁLCULO DE DATOS (Interpolación) ---
+            // Factor Coseno: 1 en Perihelio (Ene), -1 en Afelio (Jul)
+            const factorFisica = Math.cos( ((diaDelAnio - PERIHELIO_DIA) / 365.25) * 2 * Math.PI );
+
+            const velocidad = 29.78 + (0.51 * factorFisica);
+            const distancia = 149.6 - (2.5 * factorFisica);
+
+            // --- 5. ACTUALIZAR TEXTOS ---
+            document.getElementById('speedVal').innerText = velocidad.toFixed(2);
+            document.getElementById('distVal').innerText = distancia.toFixed(1);
+            document.getElementById('degVal').innerText = grados.toFixed(1);
+            document.getElementById('rotVal').innerText = diaDelAnio;
+
+            // --- 6. TEXTOS DINÁMICOS ---
+            const faseTxt = document.getElementById('orbitPhase');
+            const mensajeTxt = document.getElementById('dynamicMessage');
+
+            if (factorFisica > 0) {
+                // Lado del Perihelio (Invierno/Primavera temprana Norte)
+                faseTxt.innerText = (diaDelAnio < 100 || diaDelAnio > 300) 
+                    ? "FASE: MÁXIMA INTENSIDAD ORBITAL" 
+                    : "FASE: TRANSICIÓN RÁPIDA";
+                
+                mensajeTxt.innerText = (velocidad > 30)
+                    ? "Estás viajando a la velocidad máxima del año. Agárrate."
+                    : "La gravedad del Sol nos acelera. Siente el impulso.";
+            } else {
+                // Lado del Afelio (Verano/Otoño Norte)
+                faseTxt.innerText = "FASE: FLOTACIÓN / APOGEO";
+                mensajeTxt.innerText = "Estamos en la parte alta de la montaña rusa. Calma y perspectiva.";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Orbital | Rueda de Escritura 2026</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&display=swap');
+
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --accent-blue: #1e3a8a;
+            --accent-gold: #b45309;
+            --line-dim: #e2e8f0;
+            --line-strong: #1e293b;
+            --day-bg: #f8fafc;
+        }
+
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            .no-print { display: none; }
+            .page { border: none; box-shadow: none; margin: 0; padding: 0; }
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            font-family: 'Cormorant Garamond', serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page {
+            background: white;
+            width: 210mm;
+            height: 297mm;
+            padding: 5mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #calendar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--line-strong);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            border: none;
+            z-index: 100;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .day-num { font-family: 'Space Mono', monospace; font-size: 6px; fill: #64748b; font-weight: bold; }
+        .month-label { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; fill: var(--text-main); }
+        .weekday-tag { font-family: 'Space Mono', monospace; font-size: 7px; fill: #94a3b8; text-transform: uppercase; }
+        .season-label { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; letter-spacing: 0.3em; opacity: 0.4; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn no-print" onclick="window.print()">🖨️ IMPRIMIR CALENDARIO</button>
+
+    <div class="page">
+        <svg id="calendar-svg" viewBox="0 0 800 800">
+            <!-- Capas del SVG -->
+            <g id="layer-seasons"></g>
+            <g id="layer-grid"></g>
+            <g id="layer-text"></g>
+            <g id="layer-center"></g>
+        </svg>
+    </div>
+
+    <script>
+        const svg = document.getElementById('calendar-svg');
+        const lSeasons = document.getElementById('layer-seasons');
+        const lGrid = document.getElementById('layer-grid');
+        const lText = document.getElementById('layer-text');
+        const lCenter = document.getElementById('layer-center');
+
+        const centerX = 400;
+        const centerY = 400;
+        const innerRadius = 130;
+        const outerRadius = 380;
+        const ringWidth = (outerRadius - innerRadius) / 7;
+
+        function createSVGElement(tag, attrs) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+            for (let k in attrs) el.setAttribute(k, attrs[k]);
+            return el;
+        }
+
+        // 1. SOL CENTRAL
+        lCenter.appendChild(createSVGElement('circle', { cx: centerX, cy: centerY, r: 35, fill: '#facc15' }));
+        for(let i=0; i<32; i++) {
+            const a = (i * 11.25) * Math.PI / 180;
+            lCenter.appendChild(createSVGElement('line', {
+                x1: centerX + Math.cos(a) * 38, y1: centerY + Math.sin(a) * 38,
+                x2: centerX + Math.cos(a) * 50, y2: centerY + Math.sin(a) * 50,
+                stroke: '#facc15', 'stroke-width': 1.5
+            }));
+        }
+
+        // 2. ESTACIONES
+        const seasons = [
+            { name: "S U M M E R", color: "#fefce8", startDay: 172, endDay: 265 },
+            { name: "A U T U M N", color: "#fff7ed", startDay: 265, endDay: 355 },
+            { name: "W I N T E R", color: "#eff6ff", startDay: 355, endDay: 79 },
+            { name: "S P R I N G", color: "#f0fdf4", startDay: 79, endDay: 172 }
+        ];
+
+        // 3. LOGICA DE CALENDARIO 2026
+        const months = [
+            { name: "ENERO", days: 31 }, { name: "FEBRERO", days: 28 }, { name: "MARZO", days: 31 },
+            { name: "ABRIL", days: 30 }, { name: "MAYO", days: 31 }, { name: "JUNIO", days: 30 },
+            { name: "JULIO", days: 31 }, { name: "AGOSTO", days: 31 }, { name: "SEPTIEMBRE", days: 30 },
+            { name: "OCTUBRE", days: 31 }, { name: "NOVIEMBRE", days: 30 }, { name: "DICIEMBRE", days: 31 }
+        ];
+
+        // Determinar cuántas semanas (sectores radiales) necesitamos
+        // 2026 empieza en Jueves.
+        let totalDays = 365;
+        let startWeekday = 3; // 0=Lun, 1=Mar, 2=Mie, 3=Jue...
+        let totalWeeks = Math.ceil((totalDays + startWeekday) / 7);
+        let anglePerWeek = (2 * Math.PI) / totalWeeks;
+
+        // Dibujar Anillos (Concéntricos interiores)
+        const weekdayNames = ["LU", "MA", "MI", "JU", "VI", "SA", "DO"];
+        for(let i=0; i<=7; i++) {
+            const r = innerRadius + (i * ringWidth);
+            lGrid.appendChild(createSVGElement('circle', {
+                cx: centerX, cy: centerY, r: r,
+                fill: 'none', stroke: i === 0 || i === 7 ? 'var(--line-strong)' : 'var(--line-dim)',
+                'stroke-width': i === 0 || i === 7 ? 1.5 : 0.5
+            }));
+            
+            if(i < 7) {
+                const label = createSVGElement('text', {
+                    x: centerX + 5, y: centerY - r - (ringWidth/2),
+                    'dominant-baseline': 'middle', class: 'weekday-tag'
+                });
+                label.textContent = weekdayNames[i];
+                lText.appendChild(label);
+            }
+        }
+
+        // Dibujar Sectores Semanales y Días
+        let dayCounter = 0;
+        let monthDayCounter = 0;
+        let currentMonthIdx = 0;
+
+        for (let w = 0; currentMonthIdx < 12; w++) { // Bucle de semanas
+            const weekAngle = w * anglePerWeek - Math.PI/2;
+            
+            // Línea radial divisoria de semana (Sutil)
+            lGrid.appendChild(createSVGElement('line', {
+                x1: centerX + innerRadius * Math.cos(weekAngle), 
+                y1: centerY + innerRadius * Math.sin(weekAngle),
+                x2: centerX + outerRadius * Math.cos(weekAngle), 
+                y2: centerY + outerRadius * Math.sin(weekAngle),
+                stroke: 'var(--line-dim)', 'stroke-width': 0.5,
+                'stroke-dasharray': '2 2'
+            }));
+
+            // Rellenar días en esta semana
+            for (let wd = 0; wd < 7; wd++) {
+                if (w === 0 && wd < startWeekday) continue;
+                if (dayCounter >= 365) break;
+
+                const currentMonth = months[currentMonthIdx];
+                monthDayCounter++;
+                dayCounter++;
+
+                // Ángulo específico para este día/celda
+                const dayAngle = weekAngle + (anglePerWeek / 2);
+                const dayRadius = innerRadius + (wd * ringWidth) + 8;
+                const dx = centerX + dayRadius * Math.cos(dayAngle);
+                const dy = centerY + dayRadius * Math.sin(dayAngle);
+
+                // Si es el primer día del mes, dibujar línea radial FUERTE en el inicio de la celda
+                if (monthDayCounter === 1) {
+                    const monthStartAngle = weekAngle; // El mes empieza donde empieza esta semana/día
+                    lGrid.appendChild(createSVGElement('line', {
+                        x1: centerX + innerRadius * Math.cos(monthStartAngle), 
+                        y1: centerY + innerRadius * Math.sin(monthStartAngle),
+                        x2: centerX + (outerRadius + 30) * Math.cos(monthStartAngle), 
+                        y2: centerY + (outerRadius + 30) * Math.sin(monthStartAngle),
+                        stroke: 'var(--line-strong)', 'stroke-width': 2
+                    }));
+                    
+                    // Nombre del mes
+                    const mAngle = monthStartAngle + ( (currentMonth.days / 7) * anglePerWeek ) / 2;
+                    const mx = centerX + (outerRadius + 45) * Math.cos(mAngle);
+                    const my = centerY + (outerRadius + 45) * Math.sin(mAngle);
+                    const mText = createSVGElement('text', {
+                        x: mx, y: my, 'text-anchor': 'middle', class: 'month-label',
+                        transform: `rotate(${(mAngle * 180 / Math.PI) + 90}, ${mx}, ${my})`
+                    });
+                    mText.textContent = currentMonth.name;
+                    lText.appendChild(mText);
+                }
+
+                const dText = createSVGElement('text', {
+                    x: dx, y: dy, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
+                    class: 'day-num', transform: `rotate(${(dayAngle * 180 / Math.PI) + 90}, ${dx}, ${dy})`
+                });
+                dText.textContent = monthDayCounter;
+                lText.appendChild(dText);
+
+                // Cambio de mes
+                if (monthDayCounter >= currentMonth.days) {
+                    monthDayCounter = 0;
+                    currentMonthIdx++;
+                    if (currentMonthIdx >= 12) break;
+                }
+            }
+        }
+
+        // 4. FONDO DE ESTACIONES (Sectores de color en el anillo interior)
+        seasons.forEach(s => {
+            const startA = (s.startDay / 365) * 2 * Math.PI - Math.PI/2;
+            const endDay = s.endDay < s.startDay ? s.endDay + 365 : s.endDay;
+            const endA = (endDay / 365) * 2 * Math.PI - Math.PI/2;
+            
+            const x1 = centerX + innerRadius * Math.cos(startA);
+            const y1 = centerY + innerRadius * Math.sin(startA);
+            const x2 = centerX + innerRadius * Math.cos(endA);
+            const y2 = centerY + innerRadius * Math.sin(endA);
+            const largeArc = (endA - startA) > Math.PI ? 1 : 0;
+
+            const path = `M ${centerX} ${centerY} L ${x1} ${y1} A ${innerRadius} ${innerRadius} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+            lSeasons.appendChild(createSVGElement('path', { d: path, fill: s.color }));
+
+            // Texto de estación
+            const midA = startA + (endA - startA) / 2;
+            const tx = centerX + (innerRadius * 0.7) * Math.cos(midA);
+            const ty = centerY + (innerRadius * 0.7) * Math.sin(midA);
+            const t = createSVGElement('text', {
+                x: tx, y: ty, 'text-anchor': 'middle', class: 'season-label',
+                transform: `rotate(${(midA * 180 / Math.PI) + 90}, ${tx}, ${ty})`
+            });
+            t.textContent = s.name;
+            lSeasons.appendChild(t);
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Orbital | Escritura Horizontal 2026</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&display=swap');
+
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #1a1a1a;
+            --line-dim: #e2e8f0;
+            --line-strong: #1e293b;
+            /* Vivid season colors */
+            --spring: #4ade80;
+            --summer: #fde047;
+            --autumn: #fb923c;
+            --winter: #60a5fa;
+        }
+
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            .no-print { display: none; }
+            .page { border: none; box-shadow: none; margin: 0; padding: 0; }
+            @page { size: landscape; margin: 0; }
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            font-family: 'Cormorant Garamond', serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page {
+            background: white;
+            width: 297mm; /* Landscape A4 */
+            height: 210mm;
+            padding: 5mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #calendar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            border: none;
+            z-index: 100;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .day-num { font-family: 'Space Mono', monospace; font-size: 5px; fill: #94a3b8; font-weight: bold; }
+        .month-label { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; fill: #1e293b; letter-spacing: 1px; }
+        .season-icon { opacity: 0.3; }
+        .milestone-label { font-family: 'Space Mono', monospace; font-size: 6px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn no-print" onclick="window.print()">🖨️ IMPRIMIR CALENDARIO</button>
+
+    <div class="page">
+        <!-- Vertical space increased to 1000 to prevent clipping top/bottom labels -->
+        <svg id="calendar-svg" viewBox="0 0 1100 1000">
+            <defs>
+                <!-- Symbols for Season Icons -->
+                <symbol id="icon-spring" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 7.5V2m0 5.5L15 4.5M12 7.5L9 4.5M12 7.5C12 7.5 16 11.5 16 15.5C16 17.7 14.2 19.5 12 19.5C9.8 19.5 8 17.7 8 15.5C8 11.5 12 7.5 12 7.5Z"/>
+                </symbol>
+                <symbol id="icon-summer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4l1.4-1.4"/>
+                </symbol>
+                <symbol id="icon-autumn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3v18M12 15l-4-4M12 18l4-4M12 11l-3-3M12 8l3-3"/>
+                    <path d="M8 11c-2 0-4 2-4 4s2 4 4 4 4-2 4-4M16 11c2 0 4 2 4 4s-2 4-4 4-4-2-4-4"/>
+                </symbol>
+                <symbol id="icon-winter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/>
+                </symbol>
+
+                <!-- Gradients for transitions -->
+                <linearGradient id="grad-spring-summer" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="var(--spring)" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="var(--summer)" stop-opacity="0.2" />
+                </linearGradient>
+                <linearGradient id="grad-summer-autumn" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="var(--summer)" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="var(--autumn)" stop-opacity="0.2" />
+                </linearGradient>
+                <linearGradient id="grad-autumn-winter" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="var(--autumn)" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="var(--winter)" stop-opacity="0.2" />
+                </linearGradient>
+                <linearGradient id="grad-winter-spring" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="var(--winter)" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="var(--spring)" stop-opacity="0.2" />
+                </linearGradient>
+            </defs>
+            <g id="layer-seasons"></g>
+            <g id="layer-weeks"></g>
+            <g id="layer-grid"></g>
+            <g id="layer-text"></g>
+            <g id="layer-milestones"></g>
+            <g id="layer-center"></g>
+        </svg>
+    </div>
+
+    <script>
+        const svg = document.getElementById('calendar-svg');
+        const lSeasons = document.getElementById('layer-seasons');
+        const lWeeks = document.getElementById('layer-weeks');
+        const lGrid = document.getElementById('layer-grid');
+        const lText = document.getElementById('layer-text');
+        const lMilestones = document.getElementById('layer-milestones');
+        const lCenter = document.getElementById('layer-center');
+
+        // Center adjusted for the new 1000 height
+        const centerX = 550;
+        const centerY = 500;
+        const innerRadius = 80;  // More space for cells
+        const outerRadius = 420; // Expanded to safe limit
+        const dayRings = 7; 
+        const ringWidth = (outerRadius - innerRadius) / dayRings;
+
+        function createSVGElement(tag, attrs) {
+            const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+            for (let k in attrs) el.setAttribute(k, attrs[k]);
+            return el;
+        }
+
+        // 1. SOL CENTRAL
+        lCenter.appendChild(createSVGElement('circle', { cx: centerX, cy: centerY, r: 20, fill: '#facc15' }));
+        for(let i=0; i<24; i++) {
+            const a = (i * 15) * Math.PI / 180;
+            lCenter.appendChild(createSVGElement('line', {
+                x1: centerX + Math.cos(a) * 22, y1: centerY + Math.sin(a) * 22,
+                x2: centerX + Math.cos(a) * 28, y2: centerY + Math.sin(a) * 28,
+                stroke: '#facc15', 'stroke-width': 1
+            }));
+        }
+
+        // 2. ESTACIONES CON DEGRADADO E ICONOS
+        const seasons = [
+            { icon: "icon-spring", color: "var(--spring)", startAngle: 180, endAngle: 270, grad: "grad-spring-summer" },
+            { icon: "icon-summer", color: "var(--summer)", startAngle: -90, endAngle: 0, grad: "grad-summer-autumn" },
+            { icon: "icon-autumn", color: "var(--autumn)", startAngle: 0, endAngle: 90, grad: "grad-autumn-winter" },
+            { icon: "icon-winter", color: "var(--winter)", startAngle: 90, endAngle: 180, grad: "grad-winter-spring" }
+        ];
+
+        seasons.forEach(s => {
+            const startA = (s.startAngle) * Math.PI / 180;
+            const endA = (s.endAngle) * Math.PI / 180;
+            const x1 = centerX + outerRadius * Math.cos(startA);
+            const y1 = centerY + outerRadius * Math.sin(startA);
+            const x2 = centerX + outerRadius * Math.cos(endA);
+            const y2 = centerY + outerRadius * Math.sin(endA);
+            
+            // Slice for the season color
+            const path = `M ${centerX} ${centerY} L ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 0 1 ${x2} ${y2} Z`;
+            lSeasons.appendChild(createSVGElement('path', { d: path, fill: s.color, opacity: 0.1 }));
+
+            // Transition slice (small 15-degree gradient at the boundary)
+            const transSize = 15; 
+            const tStartAngle = s.endAngle - (transSize/2);
+            const tEndAngle = s.endAngle + (transSize/2);
+            const tr1 = tStartAngle * Math.PI / 180;
+            const tr2 = tEndAngle * Math.PI / 180;
+            const tx1 = centerX + outerRadius * Math.cos(tr1);
+            const ty1 = centerY + outerRadius * Math.sin(tr1);
+            const tx2 = centerX + outerRadius * Math.cos(tr2);
+            const ty2 = centerY + outerRadius * Math.sin(tr2);
+            const tPath = `M ${centerX} ${centerY} L ${tx1} ${ty1} A ${outerRadius} ${outerRadius} 0 0 1 ${tx2} ${ty2} Z`;
+            
+            lSeasons.appendChild(createSVGElement('path', { 
+                d: tPath, 
+                fill: `url(#${s.grad})`,
+                opacity: 0.3
+            }));
+
+            // Season Icon
+            const midA = (s.startAngle + s.endAngle) / 2 * Math.PI / 180;
+            const ix = centerX + (innerRadius * 0.7) * Math.cos(midA) - 12;
+            const iy = centerY + (innerRadius * 0.7) * Math.sin(midA) - 12;
+            
+            const icon = createSVGElement('use', {
+                href: `#${s.icon}`,
+                x: ix, y: iy, width: 24, height: 24,
+                class: 'season-icon',
+                style: `color: ${s.color}; opacity: 0.6;`
+            });
+            lSeasons.appendChild(icon);
+        });
+
+        // 3. GRILLA DE DÍAS DE LA SEMANA (Lunes... Domingo)
+        const weekdayNames = ["LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"];
+        weekdayNames.forEach((name, i) => {
+            const r = innerRadius + (i * ringWidth);
+            // Círculo del anillo
+            lGrid.appendChild(createSVGElement('circle', {
+                cx: centerX, cy: centerY, r: r,
+                fill: 'none', stroke: '#cbd5e1', 'stroke-width': 0.8, opacity: 0.5
+            }));
+            
+            // Etiqueta radial para el día de la semana
+            const labelA = -95 * Math.PI / 180;
+            const lx = centerX + (r + ringWidth/2) * Math.cos(labelA);
+            const ly = centerY + (r + ringWidth/2) * Math.sin(labelA);
+            const t = createSVGElement('text', {
+                x: lx, y: ly, 'text-anchor': 'end', 'dominant-baseline': 'middle',
+                style: 'font-size: 8px; fill: #475569; font-weight: bold; font-family: Space Mono;'
+            });
+            t.textContent = name;
+            lGrid.appendChild(t);
+        });
+        // Círculo exterior de cierre
+        lGrid.appendChild(createSVGElement('circle', {
+            cx: centerX, cy: centerY, r: outerRadius,
+            fill: 'none', stroke: '#94a3b8', 'stroke-width': 1, opacity: 0.6
+        }));
+
+        // 4. MESES Y DÍAS (Día del año = Ángulo, Día de la semana = Radio)
+        const year = 2026;
+        const months = [
+            { name: "ENERO", days: 31 }, { name: "FEBRERO", days: 28 }, { name: "MARZO", days: 31 },
+            { name: "ABRIL", days: 30 }, { name: "MAYO", days: 31 }, { name: "JUNIO", days: 30 },
+            { name: "JULIO", days: 31 }, { name: "AGOSTO", days: 31 }, { name: "SEPTIEMBRE", days: 30 },
+            { name: "OCTUBRE", days: 31 }, { name: "NOVIEMBRE", days: 30 }, { name: "DICIEMBRE", days: 31 }
+        ];
+
+        let currentDayOfYear = 0;
+        const firstDayDate = new Date(year, 0, 1);
+        let startWeekday = (firstDayDate.getDay() + 6) % 7; 
+
+        months.forEach((m, mIdx) => {
+            const mStartAngle = (currentDayOfYear / 365) * 360 - 90;
+            const mEndAngle = ((currentDayOfYear + m.days) / 365) * 360 - 90;
+            
+            // Separador de Mes (Más sutil)
+            const rad = mStartAngle * Math.PI / 180;
+            lGrid.appendChild(createSVGElement('line', {
+                x1: centerX + innerRadius * Math.cos(rad), y1: centerY + innerRadius * Math.sin(rad),
+                x2: centerX + outerRadius * Math.cos(rad), y2: centerY + outerRadius * Math.sin(rad),
+                stroke: '#94a3b8', 'stroke-width': 0.6, opacity: 0.4
+            }));
+
+            // Etiqueta del mes
+            const midMA = (mStartAngle + mEndAngle) / 2;
+            const mx = centerX + (outerRadius + 35) * Math.cos(midMA * Math.PI / 180);
+            const my = centerY + (outerRadius + 35) * Math.sin(midMA * Math.PI / 180);
+            const mLabel = createSVGElement('text', {
+                x: mx, y: my, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
+                class: 'month-label', transform: `rotate(${midMA + 90}, ${mx}, ${my})`,
+                style: 'fill: #475569; font-size: 11px; font-weight: 700;'
+            });
+            mLabel.textContent = m.name;
+            lText.appendChild(mLabel);
+
+            for(let d=1; d<=m.days; d++) {
+                const totalDayIdx = currentDayOfYear + d - 1;
+                const weekdayIdx = (startWeekday + totalDayIdx) % 7;
+                
+                const dStartAngle = (totalDayIdx / 365) * 360 - 90;
+                const dEndAngle = ((totalDayIdx + 1) / 365) * 360 - 90;
+                const midA = (dStartAngle + dEndAngle) / 2;
+                
+                const rInner = innerRadius + (weekdayIdx * ringWidth);
+                const rOuter = rInner + ringWidth;
+                
+                // Líneas separadoras del DÍA (Solo los límites radiales de su propia celda)
+                const radStart = dStartAngle * Math.PI / 180;
+                const radEnd = dEndAngle * Math.PI / 180;
+                
+                // Línea de inicio (primera)
+                lWeeks.appendChild(createSVGElement('line', {
+                    x1: centerX + rInner * Math.cos(radStart), y1: centerY + rInner * Math.sin(radStart),
+                    x2: centerX + rOuter * Math.cos(radStart), y2: centerY + rOuter * Math.sin(radStart),
+                    stroke: '#cbd5e1', 'stroke-width': 0.6, opacity: 0.8
+                }));
+                // Línea de fin (ultima)
+                lWeeks.appendChild(createSVGElement('line', {
+                    x1: centerX + rInner * Math.cos(radEnd), y1: centerY + rInner * Math.sin(radEnd),
+                    x2: centerX + rOuter * Math.cos(radEnd), y2: centerY + rOuter * Math.sin(radEnd),
+                    stroke: '#cbd5e1', 'stroke-width': 0.6, opacity: 0.8
+                }));
+
+                // Número del día (Alineado arriba a la derecha del cuadrado del día)
+                const textR = rOuter - 4; // Un pelín más separado del borde
+                const textAngle = dEndAngle - 0.3; // Un pelín más separado del borde radial
+                const tx = centerX + textR * Math.cos(textAngle * Math.PI / 180);
+                const ty = centerY + textR * Math.sin(textAngle * Math.PI / 180);
+                
+                const t = createSVGElement('text', {
+                    x: tx, y: ty, 'text-anchor': 'end', 'dominant-baseline': 'middle',
+                    class: 'day-num', transform: `rotate(${midA + 90}, ${tx}, ${ty})`,
+                    style: `fill: ${weekdayIdx >= 5 ? '#1e3a8a' : '#94a3b8'}; font-size: 5px; font-weight: bold;`
+                });
+                t.textContent = d;
+                lText.appendChild(t);
+            }
+            currentDayOfYear += m.days;
+        });
+
+        // 5. HITOS SUBTILES
+        const milestones = [
+            { day: 3, name: "PERIHELIO" },
+            { day: 79, name: "EQUINOCCIO" },
+            { day: 172, name: "SOLSTICIO" },
+            { day: 185, name: "AFELIO" },
+            { day: 265, name: "EQUINOCCIO" },
+            { day: 355, name: "SOLSTICIO" }
+        ];
+        milestones.forEach(m => {
+            const angle = (m.day / 365) * 360 - 90;
+            const rad = angle * Math.PI / 180;
+            const isAstro = m.name === "PERIHELIO" || m.name === "AFELIO";
+            
+            lMilestones.appendChild(createSVGElement('line', {
+                x1: centerX + innerRadius * Math.cos(rad), y1: centerY + innerRadius * Math.sin(rad),
+                x2: centerX + (outerRadius + 45) * Math.cos(rad), y2: centerY + (outerRadius + 45) * Math.sin(rad),
+                stroke: isAstro ? '#ef4444' : '#b45309',
+                'stroke-width': 0.5, opacity: 0.3
+            }));
+
+            const tx = centerX + (outerRadius + 50) * Math.cos(rad);
+            const ty = centerY + (outerRadius + 50) * Math.sin(rad);
+            const t = createSVGElement('text', {
+                x: tx, y: ty, 'text-anchor': Math.cos(rad) > 0 ? 'start' : 'end',
+                'dominant-baseline': 'middle', class: 'milestone-label',
+                fill: isAstro ? '#ef4444' : '#b45309', opacity: 0.4,
+                transform: `rotate(${angle > 90 && angle < 270 ? angle + 180 : angle}, ${tx}, ${ty})`
+            });
+            t.textContent = m.name;
+            lMilestones.appendChild(t);
+        });
+
+    </script>
+</body>
+</html>
